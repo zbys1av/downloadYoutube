@@ -6,8 +6,24 @@ try:
     content = ""
     filename = "downloadPath.txt"
 
-    userAction = input('Menu:\n1. Download video\n2. Download audio\n3. Change download path\n\n-> ')
+    # -------
+    def downloadMenu():
+        userAction = input('\nMenu:\n1. Download video\n2. Download audio\n3. Change download path\n\n-> ')
 
+        if userAction == "1":
+            downloadVid()
+            # downloads = downloads + 1
+        elif userAction == "2":
+            downloadAudio()
+            # downloads = downloads + 1
+        elif userAction == "3":
+            content = input("\nSet download path: ")
+            setDownloadPath(filename, content)
+            print(f"Download path set to: {getDownloadPath(filename)}\n")
+            downloadMenu()
+        else:
+            print("Incorrect input. Try again")
+            downloadMenu()
     # -------
     def getDownloadPath(filename):
         try:
@@ -37,7 +53,7 @@ try:
     # -------
     def downloadVid():
         # Ask the user to input the YouTube URL
-        url = input("Enter the YouTube URL: ")
+        url = input("\nEnter the YouTube URL: ")
         
         yt = YouTube(url)
         
@@ -45,45 +61,45 @@ try:
         print("Views:", yt.views)
 
         # Get the highest resolution stream
-        print('\n   What to download\n 0 - audio    1 - video')
-        answerType = input()
-        if answerType == "0":
-            yd = yt.streams.get_audio_only()
-        else:
-            yd = yt.streams.get_highest_resolution()
+        yd = yt.streams.get_highest_resolution()
+        yd.download(getDownloadPath(filename))
+        # downloads = downloads + 1
+        print("\nDOWNLOAD COMPLETED")
+    # -------
+
+        # -------
+    def downloadAudio():
+        # Ask the user to input the YouTube URL
+        url = input("\nEnter the YouTube URL: ")
         
-        # Download the video to the current directory
-        print('\n   Where to download\n   1 - change folder')
-        answerDownload = input()
-        if answerDownload == "1":
-            downloadPath = input('Please, enter your download path: ')
-            yd.download(downloadPath)
-        else:
-            # yd.download('D:\DOWNLOADS')
-            yd.download(getDownloadPath(filename))
+        yt = YouTube(url)
         
-        print("Download complete.")
+        print(f"\nTitle: {yt.title}")
+        print(f"Views: {yt.views}\n")
+        
+        yd = yt.streams.get_audio_only()
+        yd.download(getDownloadPath(filename))
+        # downloads = downloads + 1
+        print("\nDOWNLOAD COMPLETED")
     # -------
 
     if value == "":
         print("Looks like you are first time here.\nPlease, set download path, so I will know where to download files to.")
         content = input("\nSet download path: ")
         setDownloadPath(filename, content)
-        print("Download path set to:", getDownloadPath(filename))
+        print(f"Download path set to: {getDownloadPath(filename)}\n")
     else:
-        print("Your current download path is:", getDownloadPath(filename))
+        print(f"Your current download path is: {getDownloadPath(filename)}", )
 
+    # userAction = input('Menu:\n1. Download video\n2. Download audio\n3. Change download path\n\n-> ')
+    downloadMenu()
 
-    if downloads == 0:
-        downloadVid()
-        downloads = downloads + 1
     while True:
-        userInput = input("Do you want to download more?\n    If yes type '1'\n    -> ")
-
+        userInput = input("\n1. Download more\n2. Exit\n-> ")
         if userInput == "1":
-            downloadVid()
+            downloadMenu()
         else:
-            print("See ya!")
+            print("\nSee ya! \nYou can close this window now ;)")
             break
 
 except Exception as e:
